@@ -3,7 +3,7 @@ const https = require('https');
 const checkInterval = 10*60*1000
 
 function checkFolder(foldername) {
-  let path = process.env.NFS_PATH + foldername
+  let path = process.env.NFS_PATH +'/'+ foldername
   let lastupdated = fs.statSync(path).mtimeMs
   let lastInterval = Date.now() - checkInterval
   if (lastupdated < lastInterval) { // has folder been updated since last interval?
