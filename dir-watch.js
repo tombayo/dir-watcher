@@ -5,9 +5,10 @@ const checkInterval = 10*60*1000
 function checkFolder(foldername) {
   let path = process.env.NFS_PATH +'/'+ foldername
   let lastupdated = fs.statSync(path).mtimeMs
-  let lastInterval = Date.now() - checkInterval
+  let now = Date.now()
+  let lastInterval = now - checkInterval
   if (lastupdated < lastInterval) { // has folder been updated since last interval?
-    contactBot('Alert',`Folder '${foldername}' hasn't been updated the last ${checkInterval/(1000*60)} minutes.`)
+    contactBot('Alert',`Folder '${foldername}' hasn't been updated in ${(now-lastupdated)/(1000*60)} minutes.`)
   }
 }
 
