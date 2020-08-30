@@ -1,6 +1,6 @@
 const fs = require('fs')
 const https = require('https');
-const checkInterval = 10*60*1000
+const checkInterval = 10*60*1000 // @todo: this should be a part of the config file
 
 function checkFolder(foldername) {
   let path = process.env.NFS_PATH +'/'+ foldername
