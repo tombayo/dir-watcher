@@ -14,10 +14,11 @@ function checkFolder(foldername) {
 function contactBot(type,message) {
   let chatID = process.env.BOT_CHATID
   let botToken = process.env.BOT_TOKEN
+  let hostname = process.env.HOSTNAME
 
   let data = JSON.stringify({
       chat_id: chatID,
-      text: `Dir-watcher: ${type}\n${message}`
+      text: `Dir-watcher: ${type} [${hostname}]\n${message}`
   })
   let options = {
       hostname: 'api.telegram.org',
@@ -56,7 +57,6 @@ function contactBot(type,message) {
 
 var folders = process.env.WATCH_FOLDERS.split(' ') // The Env var seperates folders by space
 contactBot('Notice', `Dir-watch started on these folders: ${process.env.WATCH_FOLDERS}`)
-contactBot('Info', JSON.stringify(process.env))
 
 setInterval(()=>{
   for(let i=0;i<folders.length;i++) {
