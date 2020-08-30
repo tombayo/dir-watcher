@@ -34,13 +34,17 @@ function contactBot(type,message) {
       data += chunk
     })
     res.on('end', () => {
-      let jsonres = JSON.parse(data)
-      if (typeof(jsonres.ok) === 'undefined') {
-        console.log('Error in parsing API response', data)
-      } else {
-        if (!jsonres.ok) {
-          console.log('API response not OK:', data)
+      try {
+        let jsonres = JSON.parse(data)
+        if (typeof(jsonres.ok) === 'undefined') {
+          console.log('Error in parsing API response', data)
+        } else {
+          if (!jsonres.ok) {
+            console.log('API response not OK:', data)
+          }
         }
+      } catch(err) {
+        console.log('Error in parsing API response', data)
       }
     })
   }).on("error", (err) => {
