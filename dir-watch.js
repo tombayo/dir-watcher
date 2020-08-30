@@ -21,11 +21,10 @@ function contactBot(type,message) {
   })
   let options = {
       hostname: 'api.telegram.org',
-      path: `bot${botToken}/sendMessage`,
+      path: `/bot${botToken}/sendMessage`,
       method: 'POST',
       headers: {
-          'Content-Type': 'application/json',
-          'Content-Length': data.length
+          'Content-Type': 'application/json'
       }
   }
   const req = https.request(options, (res) => {
@@ -37,20 +36,19 @@ function contactBot(type,message) {
       try {
         let jsonres = JSON.parse(data)
         if (typeof(jsonres.ok) === 'undefined') {
-          console.log('Error in parsing API response', data)
+          console.log('Error in API response', data)
         } else {
           if (!jsonres.ok) {
             console.log('API response not OK:', data)
           }
         }
       } catch(err) {
-        console.log('Error in parsing API response', data)
+        console.log('Non-JSON API response', data)
       }
     })
   }).on("error", (err) => {
     console.log("HTTPS error: ", err.message)
   })
-
   req.write(data)
   req.end()
 }
