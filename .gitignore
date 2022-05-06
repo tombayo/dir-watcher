@@ -1,1 +1,2 @@
-k8s/dir-watcher.config.yaml
+node_modules/
+config.env

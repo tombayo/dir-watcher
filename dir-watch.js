@@ -1,66 +1,23 @@
-const fs = require('fs')
-const https = require('https');
-const checkInterval = 10*60*1000 // @todo: this should be a part of the config file
+import { statSync, writeFileSync } from "node:fs"
+import 'dotenv/config'
 
 function checkFolder(foldername) {
-  let path = process.env.NFS_PATH +'/'+ foldername
-  let lastupdated = fs.statSync(path).mtimeMs
+  let path = process.env.ROOT_FOLDER +'/'+ foldername
+  let lastupdated = statSync(path).mtimeMs
   let now = Date.now()
-  let lastInterval = now - checkInterval
-  if (lastupdated < lastInterval) { // has folder been updated since last interval?
-    contactBot('Alert',`Folder '${foldername}' hasn't been updated in ${(now-lastupdated)/(1000*60)} minutes.`)
-  }
+  let msSinceUpdate = now - lastupdated
+
+  return (msSinceUpdate/1000).toFixed(0) // Convert to seconds
 }
-
-function contactBot(type,message) {
-  let chatID = process.env.BOT_CHATID
-  let botToken = process.env.BOT_TOKEN
-  let hostname = process.env.HOSTNAME
-
-  let data = JSON.stringify({
-      chat_id: chatID,
-      text: `Dir-watcher: ${type} [${hostname}]\n${message}`
-  })
-  let options = {
-      hostname: 'api.telegram.org',
-      path: `/bot${botToken}/sendMessage`,
-      method: 'POST',
-      headers: {
-          'Content-Type': 'application/json'
-      }
-  }
-  const req = https.request(options, (res) => {
-    let data = ''
-    res.on('data', (chunk) => {
-      data += chunk
-    })
-    res.on('end', () => {
-      try {
-        let jsonres = JSON.parse(data)
-        if (typeof(jsonres.ok) === 'undefined') {
-          console.log('Error in API response', data)
-        } else {
-          if (!jsonres.ok) {
-            console.log('API response not OK:', data)
-          }
-        }
-      } catch(err) {
-        console.log('Non-JSON API response', data)
-      }
-    })
-  }).on("error", (err) => {
-    console.log("HTTPS error: ", err.message)
-  })
-  req.write(data)
-  req.end()
-}
-
 
 var folders = process.env.WATCH_FOLDERS.split(' ') // The Env var seperates folders by space
-contactBot('Notice', `Dir-watch started on these folders: ${process.env.WATCH_FOLDERS}`)
+var textfile = `
+# HELP dir_watcher_seconds_since_update Number of seconds since last folder update.
+# TYPE dir_watcher_seconds_since_update gauge
+`
 
-setInterval(()=>{
-  for(let i=0;i<folders.length;i++) {
-    checkFolder(folders[i])
-  }
-}, checkInterval) 
+for(let i=0;i<folders.length;i++) {
+  textfile += `dir_watcher_seconds_since_update{folder="${folders[i]}"} ${checkFolder(folders[i])}\n`
+}
+
+writeFileSync(process.env.PROM_FILE_PATH,textfile)

@@ -1,0 +1,22 @@
+{
+  "name": "dir-watcher",
+  "version": "1.0.0",
+  "description": "Checks last edit time of folders and export it to node_exporter's textfile collector",
+  "main": "dir-watch.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/tombayo/dir-watcher.git"
+  },
+  "author": "tombayo",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/tombayo/dir-watcher/issues"
+  },
+  "homepage": "https://github.com/tombayo/dir-watcher#readme",
+  "dependencies": {
+    "dotenv": "^16.0.0"
+  }
+}
