@@ -1,5 +1,5 @@
-import { statSync, writeFileSync } from "node:fs"
-import 'dotenv/config'
+const fs = require('fs')
+require('dotenv').config()
 
 function checkFolder(foldername) {
   let path = process.env.ROOT_FOLDER +'/'+ foldername
