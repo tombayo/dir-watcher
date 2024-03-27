@@ -3,7 +3,7 @@ require('dotenv').config()
 
 function checkFolder(foldername) {
   let path = process.env.ROOT_FOLDER +'/'+ foldername
-  let lastupdated = statSync(path).mtimeMs
+  let lastupdated = fs.statSync(path).mtimeMs
   let now = Date.now()
   let msSinceUpdate = now - lastupdated
 
@@ -17,7 +17,9 @@ var textfile = `
 `
 
 for(let i=0;i<folders.length;i++) {
+  console.log(`Checking ${folders[i]}`)
   textfile += `dir_watcher_seconds_since_update{folder="${folders[i]}"} ${checkFolder(folders[i])}\n`
 }
 
-writeFileSync(process.env.PROM_FILE_PATH,textfile)
+console.log(`Writing to file: ${process.env.PROM_FILE_PATH}`)
+fs.writeFileSync(process.env.PROM_FILE_PATH,textfile)
